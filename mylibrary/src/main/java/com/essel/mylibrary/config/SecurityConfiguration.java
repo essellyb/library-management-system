@@ -32,10 +32,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v1/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/books/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/books/reserve/**")
-                        .hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/books/unreserve/**")
-                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/books/reserve/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/books/unreserve/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

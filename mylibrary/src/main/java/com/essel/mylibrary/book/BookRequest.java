@@ -10,9 +10,9 @@ import lombok.*;
 @NoArgsConstructor
 public class BookRequest {
 
-    @NotBlank
+    @NotBlank(message = "Set a title for the book")
     String title;
 
-    @NotBlank
+    @NotBlank(message = "Set an author for the book")
     String author;
 }

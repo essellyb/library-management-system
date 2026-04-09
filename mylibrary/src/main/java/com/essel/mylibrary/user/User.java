@@ -2,6 +2,9 @@ package com.essel.mylibrary.user;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,9 +27,13 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username is required")
+    @Size(min = 5, max = 20, message = "Username should be between 5 and 20 characters")
     private String username;
 
     @Column(nullable = false, unique = true)
+    @Email(message = "Provide a valid email address")
+    @NotBlank(message = "email is required")
     private String email;
 
     @Column(nullable = false)
