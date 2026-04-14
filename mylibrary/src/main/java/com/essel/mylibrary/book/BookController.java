@@ -18,28 +18,28 @@ public class BookController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Book> createBook(@RequestBody BookRequest newBook) {
+    public ResponseEntity<BookResponse> createBook(@RequestBody BookRequest newBook) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(newBook));
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> viewAllBooks() {
+    public ResponseEntity<List<BookResponse>> viewAllBooks() {
         return ResponseEntity.ok(bookService.viewAllBooks());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> viewBookById(@PathVariable Integer id) {
+    public ResponseEntity<BookResponse> viewBookById(@PathVariable Integer id) {
         return ResponseEntity.ok(bookService.viewBookById(id));
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Book> update(@PathVariable Integer id, @RequestBody Book book) {
+    public ResponseEntity<BookResponse> update(@PathVariable Integer id, @RequestBody BookRequest book) {
         return ResponseEntity.ok(bookService.updateBook(book, id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         bookService.deleteBookById(id);
@@ -47,12 +47,12 @@ public class BookController {
     }
 
     @PostMapping("/reserve/{id}")
-    public ResponseEntity<Book> reserveBook(@PathVariable Integer id, @RequestBody String username) {
+    public ResponseEntity<BookResponse> reserveBook(@PathVariable Integer id, @RequestBody String username) {
         return ResponseEntity.ok(bookService.reserveBook(id, username));
     }
 
     @PostMapping("/unreserve/{id}")
-    public ResponseEntity<Book> unreserveBook(@PathVariable Integer id, @RequestBody String username) {
+    public ResponseEntity<BookResponse> unreserveBook(@PathVariable Integer id, @RequestBody String username) {
         return ResponseEntity.ok(bookService.unreserveBook(id, username));
     }
 }

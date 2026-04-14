@@ -14,73 +14,84 @@ public class BookService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
 
-    public Book createBook(BookRequest request) {
+    private BookResponse mapToResponse(Book book) {
+        return BookResponse.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .isReserved(book.getIsReserved())
+                .reservedBy(book.getReservedBy() != null ? book.getReservedBy().getUsername() : null)
+                .build();
+    }
+
+    public BookResponse createBook(BookRequest request) {
         Book newBook = Book.builder()
                 .title(request.getTitle())
                 .author(request.getAuthor())
+                .isReserved(false)
                 .build();
-        return bookRepository.save(newBook);
+        return mapToResponse(bookRepository.save(newBook));
     }
 
-    public Book viewBookById(Integer id) {
-        return bookRepository.findById(id).orElseThrow(()-> new RuntimeException("Book with id "+ id + " not found"));
+    public BookResponse viewBookById(Integer id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
+        return mapToResponse(book);
     }
 
-    public List<Book> viewAllBooks() {
-        return bookRepository.findAll();
+    public List<BookResponse> viewAllBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
-    public Book updateBook(Book updatebook, Integer id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book with id "+ id + "  not found"));
-
-        book.setTitle(updatebook.getTitle());
-        book.setAuthor(updatebook.getAuthor());
-
-        return bookRepository.save(book);
+    public BookResponse updateBook(BookRequest updateBook, Integer id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
+        book.setTitle(updateBook.getTitle());
+        book.setAuthor(updateBook.getAuthor());
+        return mapToResponse(bookRepository.save(book));
     }
 
     public void deleteBookById(Integer id) {
+        bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
         bookRepository.deleteById(id);
     }
 
-    public Book reserveBook(Integer id, String username) {
-
+    public BookResponse reserveBook(Integer id, String username) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
 
-        if (!book.getIsReserved()) {
-            throw new RuntimeException("Book already reserved");
+        if (book.getIsReserved()) {
+            throw new RuntimeException("Book is already reserved");
         }
-
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         book.setIsReserved(true);
+        book.setReservedBy(user);
 
-
-        return bookRepository.save(book);
+        return mapToResponse(bookRepository.save(book));
     }
 
-    public Book unreserveBook(Integer id, String username) {
+    public BookResponse unreserveBook(Integer id, String username) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book with id "+ id + " not found"));
+                .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
 
-        if(book.getIsReserved()) {
+        if (!book.getIsReserved()) {
             throw new RuntimeException("Book is already unreserved");
         }
 
-        if(!book.getReservedBy().getUsername().equals(username)) {
+        if (!book.getReservedBy().getUsername().equals(username)) {
             throw new RuntimeException("Unauthorized. You cannot unreserve a book you did not reserve");
         }
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Book with id "+ id + " not found"));
-
         book.setIsReserved(false);
+        book.setReservedBy(null);
 
-
-        return bookRepository.save(book);
-
+        return mapToResponse(bookRepository.save(book));
     }
 }
