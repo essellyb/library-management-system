@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -14,7 +15,6 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
-
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
@@ -32,7 +32,6 @@ public class BookController {
         return ResponseEntity.ok(bookService.viewBookById(id));
     }
 
-
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookResponse> update(@PathVariable Integer id, @RequestBody BookRequest book) {
@@ -47,12 +46,12 @@ public class BookController {
     }
 
     @PostMapping("/reserve/{id}")
-    public ResponseEntity<BookResponse> reserveBook(@PathVariable Integer id, @RequestBody String username) {
-        return ResponseEntity.ok(bookService.reserveBook(id, username));
+    public ResponseEntity<BookResponse> reserveBook(@PathVariable Integer id, Principal principal) {
+        return ResponseEntity.ok(bookService.reserveBook(id, principal.getName()));
     }
 
     @PostMapping("/unreserve/{id}")
-    public ResponseEntity<BookResponse> unreserveBook(@PathVariable Integer id, @RequestBody String username) {
-        return ResponseEntity.ok(bookService.unreserveBook(id, username));
+    public ResponseEntity<BookResponse> unreserveBook(@PathVariable Integer id, Principal principal) {
+        return ResponseEntity.ok(bookService.unreserveBook(id, principal.getName()));
     }
 }
