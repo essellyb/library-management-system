@@ -60,7 +60,7 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    public BookResponse reserveBook(Integer id, String username) {
+    public BookResponse reserveBook(Integer id, String email) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
 
@@ -68,7 +68,7 @@ public class BookService {
             throw new RuntimeException("Book is already reserved");
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         book.setIsReserved(true);
@@ -77,7 +77,7 @@ public class BookService {
         return mapToResponse(bookRepository.save(book));
     }
 
-    public BookResponse unreserveBook(Integer id, String username) {
+    public BookResponse unreserveBook(Integer id, String email) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id " + id + " not found"));
 
@@ -85,7 +85,7 @@ public class BookService {
             throw new RuntimeException("Book is already unreserved");
         }
 
-        if (!book.getReservedBy().getUsername().equals(username)) {
+        if (!book.getReservedBy().getUsername().equals(email)) {
             throw new RuntimeException("Unauthorized. You cannot unreserve a book you did not reserve");
         }
 
