@@ -27,15 +27,13 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/books/**" ).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/auth/register").permitAll()
+                        .requestMatchers("/api/v1/auth/register-admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/books/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/books/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/books/reserve/**")
-                        .hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/books/unreserve/**")
-                        .hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
