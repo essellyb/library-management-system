@@ -2,7 +2,7 @@
 
 This is a Spring Boot backend for a simple library management system. It handles user authentication and basic book operations like creating, updating, reserving, and deleting books.
 
-The project uses JWT for authentication and has role-based access (ADMIN and USER).
+The project uses JWT for authentication and has role-based access (ADMIN and USER). Roles are assigned automatically based on the endpoint used.
 
 ---
 
@@ -28,9 +28,7 @@ The project uses JWT for authentication and has role-based access (ADMIN and USE
 
 ## Base URL
 
-```
 http://localhost:8080/api/v1
-```
 
 ---
 
@@ -38,45 +36,48 @@ http://localhost:8080/api/v1
 
 ### Register user
 
-```
 POST /auth/register
-```
 
 Example request:
-
-```json id="auth1"
 {
   "username": "john",
   "email": "john@gmail.com",
-  "password": "12345",
-  "role": "USER"
+  "password": "12345"
 }
-```
+
+Role is automatically set to USER.
+
+---
+
+### Register admin
+
+POST /auth/register-admin
+
+Example request:
+{
+  "username": "admin",
+  "email": "admin@gmail.com",
+  "password": "12345"
+}
+
+Role is automatically set to ADMIN.
 
 ---
 
 ### Login
 
-```
 POST /auth/login
-```
 
 Example request:
-
-```json id="auth2"
 {
   "email": "john@gmail.com",
   "password": "12345"
 }
-```
 
 Response:
-
-```json id="auth3"
 {
   "token": "jwt-token"
 }
-```
 
 ---
 
@@ -84,64 +85,48 @@ Response:
 
 ### Create a book (Admin)
 
-```
 POST /books/create
-```
 
-```json id="book1"
 {
   "title": "Clean Code",
   "author": "Robert C. Martin"
 }
-```
 
 ---
 
 ### Get all books
 
-```
 GET /books
-```
 
 ---
 
 ### Get a single book
 
-```
 GET /books/{id}
-```
 
 ---
 
 ### Update book
 
-```
 PUT /books/update/{id}
-```
 
 ---
 
 ### Delete book
 
-```
 DELETE /books/delete/{id}
-```
 
 ---
 
 ### Reserve a book
 
-```
 POST /books/reserve/{id}
-```
 
 ---
 
 ### Unreserve a book
 
-```
 POST /books/unreserve/{id}
-```
 
 ---
 
@@ -157,9 +142,7 @@ POST /books/unreserve/{id}
 
 If the app is running, API docs are available at:
 
-```
 http://localhost:8080/swagger-ui/index.html
-```
 
 ---
 
