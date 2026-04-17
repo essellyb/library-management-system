@@ -22,7 +22,7 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByEmail("superadmin@example.com").isEmpty()) {
+        if (userRepository.findByEmail("admin@example.com").isEmpty()) {
             var admin = User.builder()
                     .username("esseladmin")
                     .email("essel@example.com")
