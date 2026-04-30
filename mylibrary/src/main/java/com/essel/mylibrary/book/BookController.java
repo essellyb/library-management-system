@@ -17,7 +17,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<BookResponse> createBook(@RequestBody BookRequest newBook) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(newBook));
     }
@@ -33,24 +33,26 @@ public class BookController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<BookResponse> update(@PathVariable Integer id, @RequestBody BookRequest book) {
         return ResponseEntity.ok(bookService.updateBook(book, id));
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         bookService.deleteBookById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reserve/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'USER')")
     public ResponseEntity<BookResponse> reserveBook(@PathVariable Integer id, Principal principal) {
         return ResponseEntity.ok(bookService.reserveBook(id, principal.getName()));
     }
 
     @PostMapping("/unreserve/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'USER')")
     public ResponseEntity<BookResponse> unreserveBook(@PathVariable Integer id, Principal principal) {
         return ResponseEntity.ok(bookService.unreserveBook(id, principal.getName()));
     }

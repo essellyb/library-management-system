@@ -61,7 +61,8 @@ public class AuthService {
 
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+            var user = userRepository.findByEmail(request.getEmail()).
+                    orElseThrow(() -> new RuntimeException("User not found"));
 
             var jwtToken = jwtService.generateToken(user);
             return AuthResponse.builder()
@@ -69,6 +70,31 @@ public class AuthService {
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteUserById(Long id) {
+        User user = userRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole().equals(Role.USER)){
+            userRepository.deleteById(id);
+        }
+        else {
+            throw new RuntimeException("Not allowed.");
+        }
+    }
+
+    public void deleteAdminById(Long id) {
+        User user = userRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        if (user.getRole().equals(Role.ADMIN)){
+            userRepository.deleteById(id);
+        }
+
+        else {
+            throw new RuntimeException("Not allowed");
         }
     }
 }

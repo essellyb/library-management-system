@@ -22,12 +22,12 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByEmail("admin@example.com").isEmpty()) {
+        if (userRepository.findByEmail("mresselll2003@gmail.com").isEmpty()) {
             var admin = User.builder()
                     .username("esseladmin")
-                    .email("essel@example.com")
+                    .email("mresselll2003@gmail.com")
                     .password(passwordEncoder.encode(adminPassword))
-                    .role(Role.ADMIN)
+                    .role(Role.SUPER_ADMIN)
                     .build();
             userRepository.save(admin);
             System.out.println("admin created successfully.");
